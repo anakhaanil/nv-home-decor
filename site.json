@@ -1,10 +1,14 @@
 {
   "shopName": "N.V. Home Decor",
   "tagline": "Home furniture, mats & mattresses, upholstery materials, gifts and crafts — all under one roof in Mavelikara.",
-  "fbUrl": "",
-  "waChannelUrl": "",
+  "fbUrl": "https://www.facebook.com/profile.php?id=61553002092226",
+  "waChannelUrl": "https://whatsapp.com/channel/0029Vb9h0Oq1Hsq59XzidT2c",
   "waNumber": "8078084069",
-  "phones": ["8078084069", "8086051414", "8606831050"],
+  "phones": [
+    "8078084069",
+    "8086051414",
+    "8606831050"
+  ],
   "email": "njaravilayilhomedecor@gmail.com",
   "address": "B.K. Complex, Nalumukku, Mankamkuzhy, Mavelikara, Kerala – 690558",
   "mapUrl": "https://www.google.com/maps/search/?api=1&query=B.K.+Complex+Nalumukku+Mankamkuzhy+Mavelikara+690558",
