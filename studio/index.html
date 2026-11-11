@@ -131,9 +131,10 @@ details.setup input.i{font-size:16px;padding:11px 12px}
 
 <details class="setup" id="setup">
   <summary>⚙️ Website connection (one-time setup — done by your helper)</summary>
-  <p>Lets the “Put on website” button upload posters straight to the website. Needs a GitHub <b>fine-grained token</b> limited to this one repository with <b>Contents: Read and write</b>. It is stored only on this phone/computer.</p>
+  <p>Connects this Poster Maker to the website, so new posters appear on the website automatically. Needs a GitHub <b>fine-grained token</b> limited to this one repository with <b>Contents: Read and write</b>. It is stored only on this phone/computer.</p>
   <div class="row"><div><label class="f">GitHub username</label><input class="i" id="cOwner" autocomplete="off"></div><div><label class="f">Repository name</label><input class="i" id="cRepo" autocomplete="off"></div><div><label class="f">Branch</label><input class="i" id="cBranch" value="main" autocomplete="off"></div></div>
   <label class="f">Token</label><input class="i" id="cToken" type="password" autocomplete="off" placeholder="github_pat_…">
+  <label style="display:flex;gap:10px;align-items:center;margin-top:16px;font-weight:700"><input type="checkbox" id="cAuto" checked style="width:26px;height:26px"> Put every new poster on the website automatically</label>
   <div class="row" style="margin-top:14px"><button class="big" id="cSave">Save &amp; test</button><button class="big light" id="cForget">Disconnect</button></div>
   <p id="cMsg"></p>
 </details>
@@ -178,7 +179,7 @@ $('#make').addEventListener('click',function(){
   var list=photos.length?photos:[''];
   made=list.map(function(ph,i){return Object.assign({},base,{photo:ph,tpl:NVPoster.TPL_ORDER[i%NVPoster.TPL_ORDER.length],id:Date.now().toString(36)+i})});
   var box=$('#results');box.innerHTML='<p class="help" style="margin-top:14px">Making '+made.length+' poster'+(made.length>1?'s':'')+'…</p>';
-  Promise.all(made.map(renderOne)).then(function(){drawResults();box.scrollIntoView({behavior:'smooth'})});
+  Promise.all(made.map(renderOne)).then(function(){drawResults();box.scrollIntoView({behavior:'smooth'});var c=getConn();if(c&&c.auto!==false)autoUpload()});
 });
 function renderOne(p){var c=document.createElement('canvas');return NVPoster.render(p,site,c).then(function(){return new Promise(function(res){c.toBlob(function(b){p.blob=b;p.url&&URL.revokeObjectURL(p.url);p.url=URL.createObjectURL(b);res()},'image/jpeg',.92)})})}
 function drawResults(){
@@ -191,6 +192,10 @@ function drawResults(){
   $$('.pc',box).forEach(function(card){var p=made[+card.getAttribute('data-i')];$$('[data-a]',card).forEach(function(b){b.onclick=function(){act(b.getAttribute('data-a'),p,card,b)}})});
   if(multi){$('#shareAll').onclick=function(){shareFiles(made,caption(made[0]))};$('#saveAll').onclick=function(){made.forEach(function(p,i){setTimeout(function(){saveFile(p)},i*400)})}}
 }
+function autoUpload(){var chain=Promise.resolve(),ok=0,list=made.slice();
+  list.forEach(function(p,i){chain=chain.then(function(){var card=$$('#results .pc')[i],st=card&&$('.status',card),b=card&&$('[data-a=site]',card);if(b)b.disabled=true;if(st)st.textContent='Putting on website…';
+    return putOnSite(p).then(function(){p.onSite=true;ok++;if(st)st.innerHTML='<span class="ok">✓ On the website (shows in 1–2 minutes)</span>';if(b)b.textContent='🌐 Put this colour on website'},function(e){if(st)st.innerHTML='<span class="bad">Not uploaded: '+esc(e.message||e)+'</span>';if(b)b.disabled=false})})});
+  chain.then(function(){if(ok){toast('✓ '+ok+' poster'+(ok>1?'s':'')+' added to the website',4000);loadSiteList()}})}
 function fileOf(p){return new File([p.blob],'nv-home-decor-'+slug(p.headline)+'-'+p.id+'.jpg',{type:'image/jpeg'})}
 function copy(txt){try{return navigator.clipboard.writeText(txt).catch(function(){})}catch(e){return Promise.resolve()}}
 function shareFiles(list,text){
@@ -205,7 +210,7 @@ function act(a,p,card,btn){
   if(a==='share')shareFiles([p],caption(p));
   if(a==='save'){saveFile(p);toast('Saved to your Downloads / Gallery')}
   if(a==='colour'){var o=NVPoster.TPL_ORDER;p.tpl=o[(o.indexOf(p.tpl)+1)%o.length];renderOne(p).then(function(){$('img',card).src=p.url})}
-  if(a==='site'){btn.disabled=true;var st=$('.status',card);st.textContent='Uploading…';putOnSite(p).then(function(){st.innerHTML='<span class="ok">✓ On the website (shows in about 1–2 minutes)</span>';loadSiteList()},function(e){btn.disabled=false;st.innerHTML='<span class="bad">Could not upload: '+esc(e.message||e)+'</span>'})}
+  if(a==='site'){btn.disabled=true;var st=$('.status',card);st.textContent='Uploading…';(p.onSite&&p.sitePath?removeFromSite({image:p.sitePath,title:p.headline}):Promise.resolve()).then(function(){return putOnSite(p)}).then(function(){p.onSite=true;st.innerHTML='<span class="ok">✓ On the website (shows in about 1–2 minutes)</span>';loadSiteList()},function(e){btn.disabled=false;st.innerHTML='<span class="bad">Could not upload: '+esc(e.message||e)+'</span>'})}
 }
 
 /* ---------- step 4: groups ---------- */
@@ -230,7 +235,7 @@ function readList(){var c=getConn();return gh('/contents/posters/posters.json?re
 function writeList(list,sha,msg){var c=getConn(),body={message:msg,content:b64utf8(JSON.stringify(list,null,2)+'\n'),branch:c.branch||'main'};if(sha)body.sha=sha;return gh('/contents/posters/posters.json',{method:'PUT',body:JSON.stringify(body)})}
 function updateList(fn,msg,tries){tries=tries||0;return readList().then(function(r){return writeList(fn(r.list),r.sha,msg)}).catch(function(e){if(e.status===409&&tries<2)return updateList(fn,msg,tries+1);throw e})}
 function putOnSite(p){var c=getConn(),d=new Date(),name=d.toISOString().slice(0,10)+'-'+slug(p.headline)+'-'+p.id+'.jpg',path='posters/'+name;
-  return blobB64(p.blob).then(function(b64){return gh('/contents/'+path,{method:'PUT',body:JSON.stringify({message:'Add poster: '+p.headline,content:b64,branch:c.branch||'main'})})})
+  p.sitePath=path;return blobB64(p.blob).then(function(b64){return gh('/contents/'+path,{method:'PUT',body:JSON.stringify({message:'Add poster: '+p.headline,content:b64,branch:c.branch||'main'})})})
    .then(function(){return updateList(function(list){list.unshift({image:path,title:p.headline+(p.offer?' – '+p.offer:''),added:d.toISOString(),featured:false});return list},'List poster: '+p.headline)})}
 function removeFromSite(item){var c=getConn();return updateList(function(list){return list.filter(function(x){return x.image!==item.image})},'Remove poster: '+(item.title||item.image))
   .then(function(){return gh('/contents/'+item.image+'?ref='+encodeURIComponent(c.branch||'main')).then(function(f){return gh('/contents/'+item.image,{method:'DELETE',body:JSON.stringify({message:'Delete poster file',sha:f.sha,branch:c.branch||'main'})})}).catch(function(){})})}
@@ -239,8 +244,8 @@ function loadSiteList(){if(!getConn()){$('#siteStep').style.display='none';retur
    box.innerHTML=r.list.map(function(x,i){return '<div><img src="../'+esc(x.image)+'" alt="" onerror="this.style.opacity=.3">'+esc(x.title||'')+'<br><button data-i="'+i+'">Remove from website</button></div>'}).join('');
    $$('button',box).forEach(function(b){b.onclick=function(){var it=r.list[+b.getAttribute('data-i')];if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Tap again to remove';return}b.disabled=true;b.textContent='Removing…';removeFromSite(it).then(function(){toast('Removed from website ✓');loadSiteList()},function(e){toast('Could not remove: '+e.message);b.disabled=false})}})},
   function(e){box.innerHTML='<p class="bad">Could not load: '+esc(e.message)+'</p>'})}
-(function initConn(){var c=lsGet('nv-conn',{})||{};$('#cOwner').value=c.owner||'';$('#cRepo').value=c.repo||'';$('#cBranch').value=c.branch||'main';$('#cToken').value=c.token?'••••••••':'';
-  $('#cSave').onclick=function(){var old=lsGet('nv-conn',{})||{},tok=$('#cToken').value.trim();var nc={owner:$('#cOwner').value.trim(),repo:$('#cRepo').value.trim(),branch:$('#cBranch').value.trim()||'main',token:(tok&&tok!=='••••••••')?tok:old.token};
+(function initConn(){var c=lsGet('nv-conn',{})||{};$('#cOwner').value=c.owner||'';$('#cRepo').value=c.repo||'';$('#cBranch').value=c.branch||'main';$('#cAuto').checked=c.auto!==false;$('#cToken').value=c.token?'••••••••':'';
+  $('#cSave').onclick=function(){var old=lsGet('nv-conn',{})||{},tok=$('#cToken').value.trim();var nc={owner:$('#cOwner').value.trim(),repo:$('#cRepo').value.trim(),branch:$('#cBranch').value.trim()||'main',auto:$('#cAuto').checked,token:(tok&&tok!=='••••••••')?tok:old.token};
    if(!nc.owner||!nc.repo||!nc.token){$('#cMsg').innerHTML='<span class="bad">Fill in all fields.</span>';return}lsSet('nv-conn',nc);$('#cMsg').textContent='Testing…';
    gh('').then(function(j){var can=j.permissions&&j.permissions.push;$('#cMsg').innerHTML=can===false?'<span class="bad">Connected, but this token cannot write. Give it Contents: Read and write.</span>':'<span class="ok">✓ Connected to '+esc(j.full_name)+'. “Put on website” buttons are now on.</span>';$('#cToken').value='••••••••';loadSiteList();if(made.length)drawResults()},function(e){$('#cMsg').innerHTML='<span class="bad">Not connected: '+esc(e.message)+'</span>'})};
   $('#cForget').onclick=function(){try{localStorage.removeItem('nv-conn')}catch(e){}$('#cToken').value='';$('#cMsg').textContent='Disconnected from this device.';loadSiteList();if(made.length)drawResults()};
