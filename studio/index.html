@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Poster Maker – N.V. Home Decor (shop use only)</title>
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script src="../assets/poster.js"></script>
+<style>
+:root{--cream:#F6F0E7;--paper:#FFFBF5;--ink:#2A211B;--muted:#6F6055;--terra:#B5543A;--gold:#D9A66B;--line:#E2D5C3;--wa:#1F9D55;--fb:#1F5FD1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font:19px/1.5 "DM Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;margin:0;line-height:1.1}
+.wrap{max-width:980px;margin:0 auto;padding:0 18px}
+header{background:var(--ink);color:#F6EEDF;padding:16px 0}
+header .wrap{display:flex;align-items:center;gap:14px;justify-content:space-between;flex-wrap:wrap}
+header img{width:48px;height:48px}
+header h1{font-size:25px}header small{display:block;font:500 14px "DM Sans";color:#CBBBA6}
+header a{color:#F6EEDF;font-size:16px}
+.step{background:var(--paper);border:1px solid var(--line);border-radius:20px;padding:24px;margin:22px 0}
+.step h2{font-size:27px;display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.num{width:42px;height:42px;border-radius:50%;background:var(--terra);color:#fff;display:inline-grid;place-items:center;font:800 21px "DM Sans";flex:none}
+.help{color:var(--muted);margin:0 0 14px;font-size:17px}
+.big{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:64px;padding:14px 22px;border-radius:16px;border:0;background:var(--ink);color:#fff;font:700 21px "DM Sans",sans-serif;cursor:pointer;text-decoration:none;text-align:center}
+.big:active{transform:scale(.99)}
+.big.terra{background:var(--terra)}.big.wa{background:var(--wa)}.big.fb{background:var(--fb)}.big.light{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.big[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1 1 200px}
+label.f{display:block;font-weight:700;font-size:17px;margin:16px 0 7px}
+input.i,select.i{width:100%;padding:15px 16px;border-radius:12px;border:2px solid var(--line);background:#fff;font:20px "DM Sans",sans-serif;color:var(--ink)}
+input.i:focus{outline:none;border-color:var(--terra)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:9px 15px;font:600 16px "DM Sans",sans-serif;cursor:pointer;color:var(--ink)}
+.chip:active,.chip.on{background:var(--gold);border-color:var(--gold)}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:14px}
+.thumb{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:1;background:#eee}
+.thumb img{width:100%;height:100%;object-fit:cover}
+.thumb button{position:absolute;top:6px;right:6px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(0,0,0,.65);color:#fff;font-size:18px;cursor:pointer}
+.seg{display:flex;gap:10px}.seg button{flex:1;min-height:58px;border-radius:14px;border:2px solid var(--line);background:#fff;font:700 17px "DM Sans";cursor:pointer;color:var(--muted)}
+.seg button.on{border-color:var(--ink);color:var(--ink);background:#FFF6E8}
+.posters{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:22px;margin-top:16px}
+.pc{background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px}
+.pc img{width:100%;border-radius:10px;display:block}
+.pc .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pc .acts .big{min-height:54px;font-size:17px;border-radius:12px;padding:10px}
+.pc .acts .full{grid-column:1/-1}
+.status{font-size:15px;color:var(--muted);text-align:center;margin-top:6px;min-height:20px}
+.glist{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.g{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
+.g.done{opacity:.55}
+.g .nm{flex:1;font-weight:700;word-break:break-word}
+.g input[type=checkbox]{width:28px;height:28px;flex:none}
+.g a{background:var(--fb);color:#fff;text-decoration:none;padding:10px 16px;border-radius:10px;font-weight:700;font-size:16px;white-space:nowrap}
+.g .x{border:0;background:none;font-size:22px;color:#A33;cursor:pointer}
+details.setup{margin:22px 0 60px;background:var(--paper);border:1px dashed var(--line);border-radius:16px;padding:16px 20px;font-size:16px}
+details.setup summary{cursor:pointer;font-weight:700}
+details.setup input.i{font-size:16px;padding:11px 12px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:14px 22px;border-radius:16px;font-weight:600;font-size:17px;opacity:0;transition:.25s;z-index:99;max-width:92vw;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%)}
+.ok{color:var(--wa);font-weight:700}.bad{color:#A33;font-weight:700}
+.sitelist{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:14px}
+.sitelist div{background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px;text-align:center;font-size:15px}
+.sitelist img{width:100%;border-radius:8px;display:block;margin-bottom:6px}
+.sitelist button{border:0;background:#FBE9E6;color:#A33;font:700 15px "DM Sans";padding:8px 10px;border-radius:8px;cursor:pointer;width:100%}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div style="display:flex;align-items:center;gap:14px"><img src="../assets/logo.svg" alt=""><div><h1>Poster Maker</h1><small>N.V. Home Decor · for shop use only</small></div></div>
+  <a href="../" target="_blank" rel="noopener">Open our website ↗</a>
+</div></header>
+
+<main class="wrap">
+
+<section class="step">
+  <h2><span class="num">1</span>Choose photos</h2>
+  <p class="help">Pick one or more photos of the furniture. One poster is made for each photo.</p>
+  <label class="big terra" for="photos" style="cursor:pointer">📷 Choose photos</label>
+  <input type="file" id="photos" accept="image/*" multiple hidden>
+  <div class="thumbs" id="thumbs"></div>
+  <p class="help" id="noPhotoHelp" style="margin-top:12px">No photo? That’s fine — a furniture drawing is used instead.</p>
+</section>
+
+<section class="step">
+  <h2><span class="num">2</span>Write the offer</h2>
+  <label class="f" for="hl">Big heading</label>
+  <input class="i" id="hl" maxlength="60" placeholder="e.g. Christmas Sale">
+  <div class="chips" data-for="hl">
+    <button class="chip">New Arrivals</button><button class="chip">Christmas Sale</button><button class="chip">New Year Offer</button><button class="chip">Onam Offer</button><button class="chip">Vishu Offer</button><button class="chip">Clearance Sale</button><button class="chip">Wedding Season Offer</button><button class="chip">Special Offer</button>
+  </div>
+  <label class="f" for="of">Offer (in the round badge)</label>
+  <input class="i" id="of" maxlength="18" placeholder="e.g. 20% OFF">
+  <div class="chips" data-for="of">
+    <button class="chip">10% OFF</button><button class="chip">20% OFF</button><button class="chip">30% OFF</button><button class="chip">50% OFF</button><button class="chip">FREE Delivery</button><button class="chip">New</button><button class="chip">Best Price</button>
+  </div>
+  <label class="f" for="sb">Small line (price or details) — optional</label>
+  <input class="i" id="sb" maxlength="80" placeholder="e.g. 3-seater sofa now ₹18,999">
+  <label class="f">Poster size</label>
+  <div class="seg" id="size"><button data-v="square" class="on">Facebook post<br><small style="font-weight:500">square</small></button><button data-v="story">WhatsApp Status<br><small style="font-weight:500">tall</small></button></div>
+</section>
+
+<section class="step">
+  <h2><span class="num">3</span>Make posters</h2>
+  <button class="big" id="make">✨ Make my posters</button>
+  <div id="results"></div>
+</section>
+
+<section class="step" id="shareStep">
+  <h2><span class="num">4</span>Share in Facebook groups &amp; pages</h2>
+  <p class="help">Facebook does not allow any app to post in many groups at once, so do it one by one: tap <b>Open</b>, make a post with your saved poster, paste the words, then tick it ✓. Space your posts out — posting the same thing in many groups very quickly can get your account blocked.</p>
+  <div class="glist" id="glist"></div>
+  <div class="row" style="margin-top:14px">
+    <input class="i" id="gname" placeholder="Group or page name" style="flex:2 1 220px">
+    <input class="i" id="glink" placeholder="Paste its Facebook link" style="flex:3 1 260px">
+  </div>
+  <div class="row" style="margin-top:10px">
+    <button class="big light" id="gadd">＋ Add to my list</button>
+    <button class="big light" id="greset">↺ Untick all (new post)</button>
+  </div>
+</section>
+
+<section class="step" id="siteStep" style="display:none">
+  <h2><span class="num">5</span>Posters on the website</h2>
+  <p class="help">These are the posters customers see on the website right now.</p>
+  <div class="sitelist" id="sitelist"></div>
+</section>
+
+<details class="setup" id="setup">
+  <summary>⚙️ Website connection (one-time setup — done by your helper)</summary>
+  <p>Lets the “Put on website” button upload posters straight to the website. Needs a GitHub <b>fine-grained token</b> limited to this one repository with <b>Contents: Read and write</b>. It is stored only on this phone/computer.</p>
+  <div class="row"><div><label class="f">GitHub username</label><input class="i" id="cOwner" autocomplete="off"></div><div><label class="f">Repository name</label><input class="i" id="cRepo" autocomplete="off"></div><div><label class="f">Branch</label><input class="i" id="cBranch" value="main" autocomplete="off"></div></div>
+  <label class="f">Token</label><input class="i" id="cToken" type="password" autocomplete="off" placeholder="github_pat_…">
+  <div class="row" style="margin-top:14px"><button class="big" id="cSave">Save &amp; test</button><button class="big light" id="cForget">Disconnect</button></div>
+  <p id="cMsg"></p>
+</details>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+function $(s,r){return (r||document).querySelector(s)}
+function $$(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function toast(m,ms){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},ms||3000)}
+function lsGet(k,d){try{var v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){return d}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function slug(s){return String(s||'poster').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'poster'}
+
+var site={shopName:'N.V. Home Decor',phones:[]};
+fetch('../site.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){site=j||site}).catch(function(){});
+
+/* ---------- step 1: photos ---------- */
+var photos=[];
+$('#photos').addEventListener('change',function(e){
+  var files=Array.prototype.slice.call(e.target.files||[]);e.target.value='';
+  Promise.all(files.map(shrink)).then(function(list){list.forEach(function(u){if(u)photos.push(u)});drawThumbs()});
+});
+function shrink(file){return new Promise(function(res){var rd=new FileReader();rd.onload=function(){var im=new Image();im.onload=function(){var m=1400,sc=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*sc);c.height=Math.round(im.height*sc);c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.85))};im.onerror=function(){toast('One photo could not be opened');res(null)};im.src=rd.result};rd.readAsDataURL(file)})}
+function drawThumbs(){var t=$('#thumbs');t.innerHTML=photos.map(function(u,i){return '<div class="thumb"><img src="'+u+'" alt=""><button data-i="'+i+'" aria-label="Remove photo">✕</button></div>'}).join('');
+  $$('button',t).forEach(function(b){b.onclick=function(){photos.splice(+b.getAttribute('data-i'),1);drawThumbs()}});
+  $('#noPhotoHelp').style.display=photos.length?'none':'block'}
+
+/* ---------- step 2 ---------- */
+$$('.chips').forEach(function(box){var inp=$('#'+box.getAttribute('data-for'));$$('.chip',box).forEach(function(c){c.addEventListener('click',function(){inp.value=c.textContent;$$('.chip',box).forEach(function(x){x.classList.toggle('on',x===c)})})})});
+var size='square';$$('#size button').forEach(function(b){b.onclick=function(){size=b.getAttribute('data-v');$$('#size button').forEach(function(x){x.classList.toggle('on',x===b)})}});
+
+/* ---------- step 3 ---------- */
+var made=[];
+function caption(p){var L=[];L.push((p.offer?'🔥 '+p.offer+' — ':'')+p.headline);if(p.sub)L.push(p.sub);L.push('');L.push('🏠 '+(site.shopName||'N.V. Home Decor')+(site.address?', '+site.address:''));if(site.phones&&site.phones.length)L.push('📞 '+site.phones.join(', '));if(site.waChannelUrl)L.push('💬 Offers on WhatsApp: '+site.waChannelUrl);if(site.fbUrl)L.push('👍 '+site.fbUrl);L.push('');L.push('#NVHomeDecor #Mavelikara #Furniture #Sofa #Mattress #HomeDecor');return L.join('\n')}
+$('#make').addEventListener('click',function(){
+  var headline=$('#hl').value.trim();if(!headline){toast('Please type the big heading first (step 2)');$('#hl').focus();return}
+  var base={headline:headline,offer:$('#of').value.trim(),sub:$('#sb').value.trim(),cta:'Visit us today',size:size};
+  var list=photos.length?photos:[''];
+  made=list.map(function(ph,i){return Object.assign({},base,{photo:ph,tpl:NVPoster.TPL_ORDER[i%NVPoster.TPL_ORDER.length],id:Date.now().toString(36)+i})});
+  var box=$('#results');box.innerHTML='<p class="help" style="margin-top:14px">Making '+made.length+' poster'+(made.length>1?'s':'')+'…</p>';
+  Promise.all(made.map(renderOne)).then(function(){drawResults();box.scrollIntoView({behavior:'smooth'})});
+});
+function renderOne(p){var c=document.createElement('canvas');return NVPoster.render(p,site,c).then(function(){return new Promise(function(res){c.toBlob(function(b){p.blob=b;p.url&&URL.revokeObjectURL(p.url);p.url=URL.createObjectURL(b);res()},'image/jpeg',.92)})})}
+function drawResults(){
+  var conn=getConn(),box=$('#results'),multi=made.length>1;
+  box.innerHTML=(multi?'<div class="row" style="margin-top:16px"><button class="big fb" id="shareAll">📤 Share all '+made.length+' posters</button><button class="big light" id="saveAll">⬇ Save all to phone</button></div>':'')+
+   '<div class="posters">'+made.map(function(p,i){return '<div class="pc" data-i="'+i+'"><img src="'+p.url+'" alt="Poster '+(i+1)+'"><div class="acts">'+
+   '<button class="big fb full" data-a="share">📤 Share</button><button class="big light" data-a="save">⬇ Save</button><button class="big light" data-a="colour">🎨 Colour</button>'+
+   (conn?'<button class="big terra full" data-a="site">🌐 Put on website</button>':'')+'</div><div class="status"></div></div>'}).join('')+'</div>'+
+   '<p class="help" style="margin-top:14px">When you tap <b>Share</b>, the words for the post are copied too — in Facebook, press and hold the text box and tap <b>Paste</b>.</p>';
+  $$('.pc',box).forEach(function(card){var p=made[+card.getAttribute('data-i')];$$('[data-a]',card).forEach(function(b){b.onclick=function(){act(b.getAttribute('data-a'),p,card,b)}})});
+  if(multi){$('#shareAll').onclick=function(){shareFiles(made,caption(made[0]))};$('#saveAll').onclick=function(){made.forEach(function(p,i){setTimeout(function(){saveFile(p)},i*400)})}}
+}
+function fileOf(p){return new File([p.blob],'nv-home-decor-'+slug(p.headline)+'-'+p.id+'.jpg',{type:'image/jpeg'})}
+function copy(txt){try{return navigator.clipboard.writeText(txt).catch(function(){})}catch(e){return Promise.resolve()}}
+function shareFiles(list,text){
+  var files=list.map(fileOf);copy(text);
+  if(navigator.canShare&&navigator.canShare({files:files})){
+    navigator.share({files:files,text:text}).then(function(){toast('Shared ✓')}).catch(function(e){if(e&&e.name!=='AbortError')fallbackShare(list)});
+  }else fallbackShare(list);
+}
+function fallbackShare(list){list.forEach(function(p,i){setTimeout(function(){saveFile(p)},i*400)});toast('Poster saved and the words are copied. Now open Facebook → Photo → choose the poster → paste the words.',6500);if(site.fbUrl)setTimeout(function(){window.open(site.fbUrl,'_blank','noopener')},800)}
+function saveFile(p){var a=document.createElement('a');a.href=p.url;a.download=fileOf(p).name;document.body.appendChild(a);a.click();a.remove()}
+function act(a,p,card,btn){
+  if(a==='share')shareFiles([p],caption(p));
+  if(a==='save'){saveFile(p);toast('Saved to your Downloads / Gallery')}
+  if(a==='colour'){var o=NVPoster.TPL_ORDER;p.tpl=o[(o.indexOf(p.tpl)+1)%o.length];renderOne(p).then(function(){$('img',card).src=p.url})}
+  if(a==='site'){btn.disabled=true;var st=$('.status',card);st.textContent='Uploading…';putOnSite(p).then(function(){st.innerHTML='<span class="ok">✓ On the website (shows in about 1–2 minutes)</span>';loadSiteList()},function(e){btn.disabled=false;st.innerHTML='<span class="bad">Could not upload: '+esc(e.message||e)+'</span>'})}
+}
+
+/* ---------- step 4: groups ---------- */
+function groups(){return lsGet('nv-groups',[])}
+function drawGroups(){var g=groups(),box=$('#glist');
+  box.innerHTML=g.length?g.map(function(x,i){return '<div class="g'+(x.done?' done':'')+'"><input type="checkbox" data-i="'+i+'" '+(x.done?'checked':'')+' aria-label="Done"><span class="nm">'+esc(x.name)+'</span><a href="'+esc(x.url)+'" target="_blank" rel="noopener">Open</a><button class="x" data-del="'+i+'" aria-label="Remove">✕</button></div>'}).join(''):'<p class="help" style="margin:0">Your list is empty. Add the Facebook groups and pages where you post offers (buy &amp; sell groups for Mavelikara, Chengannur, Kayamkulam…), plus your own shop page.</p>';
+  $$('input[type=checkbox]',box).forEach(function(c){c.onchange=function(){var g2=groups();g2[+c.getAttribute('data-i')].done=c.checked;lsSet('nv-groups',g2);drawGroups()}});
+  $$('[data-del]',box).forEach(function(b){b.onclick=function(){var g2=groups();g2.splice(+b.getAttribute('data-del'),1);lsSet('nv-groups',g2);drawGroups()}});
+}
+$('#gadd').onclick=function(){var n=$('#gname').value.trim(),u=$('#glink').value.trim();if(!n||!u){toast('Type the name and paste the link');return}if(!/^https?:\/\//i.test(u))u='https://'+u;var g=groups();g.push({name:n,url:u,done:false});lsSet('nv-groups',g);$('#gname').value='';$('#glink').value='';drawGroups();toast('Added ✓')};
+$('#greset').onclick=function(){var g=groups();g.forEach(function(x){x.done=false});lsSet('nv-groups',g);drawGroups()};
+drawGroups();
+
+/* ---------- website connection (GitHub) ---------- */
+function getConn(){var c=lsGet('nv-conn',null);return c&&c.owner&&c.repo&&c.token?c:null}
+function gh(path,opt){var c=getConn();opt=opt||{};opt.headers={'Authorization':'Bearer '+c.token,'Accept':'application/vnd.github+json'};if(opt.body)opt.headers['Content-Type']='application/json';
+  return fetch('https://api.github.com/repos/'+encodeURIComponent(c.owner)+'/'+encodeURIComponent(c.repo)+path,opt).then(function(r){return r.json().catch(function(){return {}}).then(function(j){if(!r.ok){var e=new Error(r.status===401?'token not accepted':r.status===404?'repository not found':(j.message||('error '+r.status)));e.status=r.status;throw e}return j})})}
+function b64utf8(s){return btoa(unescape(encodeURIComponent(s)))}
+function unb64utf8(s){return decodeURIComponent(escape(atob(String(s).replace(/\s/g,''))))}
+function blobB64(b){return new Promise(function(res){var r=new FileReader();r.onload=function(){res(String(r.result).split(',')[1])};r.readAsDataURL(b)})}
+function readList(){var c=getConn();return gh('/contents/posters/posters.json?ref='+encodeURIComponent(c.branch||'main')).then(function(j){var list=[];try{list=JSON.parse(unb64utf8(j.content))}catch(e){}return {sha:j.sha,list:Array.isArray(list)?list:[]}},function(e){if(e.status===404)return {sha:null,list:[]};throw e})}
+function writeList(list,sha,msg){var c=getConn(),body={message:msg,content:b64utf8(JSON.stringify(list,null,2)+'\n'),branch:c.branch||'main'};if(sha)body.sha=sha;return gh('/contents/posters/posters.json',{method:'PUT',body:JSON.stringify(body)})}
+function updateList(fn,msg,tries){tries=tries||0;return readList().then(function(r){return writeList(fn(r.list),r.sha,msg)}).catch(function(e){if(e.status===409&&tries<2)return updateList(fn,msg,tries+1);throw e})}
+function putOnSite(p){var c=getConn(),d=new Date(),name=d.toISOString().slice(0,10)+'-'+slug(p.headline)+'-'+p.id+'.jpg',path='posters/'+name;
+  return blobB64(p.blob).then(function(b64){return gh('/contents/'+path,{method:'PUT',body:JSON.stringify({message:'Add poster: '+p.headline,content:b64,branch:c.branch||'main'})})})
+   .then(function(){return updateList(function(list){list.unshift({image:path,title:p.headline+(p.offer?' – '+p.offer:''),added:d.toISOString(),featured:false});return list},'List poster: '+p.headline)})}
+function removeFromSite(item){var c=getConn();return updateList(function(list){return list.filter(function(x){return x.image!==item.image})},'Remove poster: '+(item.title||item.image))
+  .then(function(){return gh('/contents/'+item.image+'?ref='+encodeURIComponent(c.branch||'main')).then(function(f){return gh('/contents/'+item.image,{method:'DELETE',body:JSON.stringify({message:'Delete poster file',sha:f.sha,branch:c.branch||'main'})})}).catch(function(){})})}
+function loadSiteList(){if(!getConn()){$('#siteStep').style.display='none';return}$('#siteStep').style.display='block';var box=$('#sitelist');box.innerHTML='<p class="help">Loading…</p>';
+  readList().then(function(r){if(!r.list.length){box.innerHTML='<p class="help">No posters on the website yet.</p>';return}
+   box.innerHTML=r.list.map(function(x,i){return '<div><img src="../'+esc(x.image)+'" alt="" onerror="this.style.opacity=.3">'+esc(x.title||'')+'<br><button data-i="'+i+'">Remove from website</button></div>'}).join('');
+   $$('button',box).forEach(function(b){b.onclick=function(){var it=r.list[+b.getAttribute('data-i')];if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Tap again to remove';return}b.disabled=true;b.textContent='Removing…';removeFromSite(it).then(function(){toast('Removed from website ✓');loadSiteList()},function(e){toast('Could not remove: '+e.message);b.disabled=false})}})},
+  function(e){box.innerHTML='<p class="bad">Could not load: '+esc(e.message)+'</p>'})}
+(function initConn(){var c=lsGet('nv-conn',{})||{};$('#cOwner').value=c.owner||'';$('#cRepo').value=c.repo||'';$('#cBranch').value=c.branch||'main';$('#cToken').value=c.token?'••••••••':'';
+  $('#cSave').onclick=function(){var old=lsGet('nv-conn',{})||{},tok=$('#cToken').value.trim();var nc={owner:$('#cOwner').value.trim(),repo:$('#cRepo').value.trim(),branch:$('#cBranch').value.trim()||'main',token:(tok&&tok!=='••••••••')?tok:old.token};
+   if(!nc.owner||!nc.repo||!nc.token){$('#cMsg').innerHTML='<span class="bad">Fill in all fields.</span>';return}lsSet('nv-conn',nc);$('#cMsg').textContent='Testing…';
+   gh('').then(function(j){var can=j.permissions&&j.permissions.push;$('#cMsg').innerHTML=can===false?'<span class="bad">Connected, but this token cannot write. Give it Contents: Read and write.</span>':'<span class="ok">✓ Connected to '+esc(j.full_name)+'. “Put on website” buttons are now on.</span>';$('#cToken').value='••••••••';loadSiteList();if(made.length)drawResults()},function(e){$('#cMsg').innerHTML='<span class="bad">Not connected: '+esc(e.message)+'</span>'})};
+  $('#cForget').onclick=function(){try{localStorage.removeItem('nv-conn')}catch(e){}$('#cToken').value='';$('#cMsg').textContent='Disconnected from this device.';loadSiteList();if(made.length)drawResults()};
+  if(getConn())$('#setup').open=false;loadSiteList();
+})();
+})();
+</script>
+</body>
+</html>
